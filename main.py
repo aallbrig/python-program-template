@@ -1,26 +1,28 @@
 # Andrew Allbright
-# This is meant to only read in one drone video at a time to produce the color image
+# Command line program template to ease development of future scripts.  The main idea
+# is to be able to add arguments via configuration so I don't have to look up argparse
+# anymore.
 
 import argparse
-from pprint import pprint
 
 # Models
 def Arg(name,
-        terminalVariableName='none',
-        defaultValue='default value',
+        terminalVariableName=None,
+        defaultValue=None,
         help='default help text'):
   return {
-    'name': str(name),
-    'terminalVariableName': str(terminalVariableName),
-    'defaultValue': str(defaultValue),
+    'name': name,
+    'terminalVariableName': terminalVariableName,
+    'defaultValue': defaultValue,
     'help': str(help)
   }
 
+# Utility FNs
 def log(logText):
-  # Easy to add volatile or more permanent solution later.
+  # Easy to add volatile or more permanent log storage solution later.
   print(logText)
 
-# configuration
+# Configuration
 config = {
   'description': 'Description of program',
   'help': 'usage: python main.py -d directory --tmp temporary directory in case program failure',
@@ -39,7 +41,6 @@ if __name__ == "__main__":
   # Set up args -- fill in via config above
   parser = argparse.ArgumentParser(description=config['description'])
 
-  log('\n## Arguments')
   for arg in config['args']:
     outputTextTmpl = '- - Argument registered with name of: %s, help text of: %s'
     log(outputTextTmpl % (arg['name'], arg['help']))
@@ -47,7 +48,6 @@ if __name__ == "__main__":
                         help=arg['help'],
                         default=arg['defaultValue'])
 
-  log('\n### Optional arguments')
   for arg in config['optionalArgs']:
     outputTextTmpl = '- - Optional argument registered with name of: %s, help text of: %s'
     log(outputTextTmpl % (arg['terminalVariableName'], arg['help']))
@@ -60,11 +60,9 @@ if __name__ == "__main__":
 
   print('Program primary function go')
   # Program function logic
-
-  print('....You passed in %s for -d' % (args.d))
-  if args.tmp:
-    print('....You passed in %s for --tmp' %(args.tmp))
+  for key, value in dict(args.__dict__).iteritems():
+    if value:
+      print('.... Arg %s has value %s' % (key, value))
 
   # Program function logic end
   print('\n\n---- - - - Program complete! - - - ----\n\n\n')
-
