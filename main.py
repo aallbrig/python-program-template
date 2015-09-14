@@ -39,15 +39,22 @@ if __name__ == "__main__":
   # Set up args -- fill in via config above
   parser = argparse.ArgumentParser(description=config['description'])
 
-  log('\n\n## Arguments\n')
+  log('\n## Arguments')
   for arg in config['args']:
-    log('- - Argument registered with name of: %s, help text of: %s' % (arg['name'], arg['help']))
-    parser.add_argument(arg['terminalVariableName'], help=arg['help'])
+    outputTextTmpl = '- - Argument registered with name of: %s, help text of: %s'
+    log(outputTextTmpl % (arg['name'], arg['help']))
+    parser.add_argument(arg['terminalVariableName'],
+                        help=arg['help'],
+                        default=arg['defaultValue'])
 
-  log('\n\n### Optional arguments\n')
+  log('\n### Optional arguments')
   for arg in config['optionalArgs']:
-    log('- - Optional argument registered with name of: %s, help text of: %s' % (arg['terminalVariableName'], arg['help']))
-    parser.add_argument(arg['terminalVariableName'], nargs='?', help=arg['help'])
+    outputTextTmpl = '- - Optional argument registered with name of: %s, help text of: %s'
+    log(outputTextTmpl % (arg['terminalVariableName'], arg['help']))
+    parser.add_argument(arg['terminalVariableName'],
+                        nargs='?',
+                        help=arg['help'],
+                        default=arg['defaultValue'])
 
   args = parser.parse_args()
 
